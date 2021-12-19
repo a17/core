@@ -29,16 +29,18 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   }
 
   const token = await deployments.get('ProfitToken')
+  const stakedToken = await deployments.get('StakedProfit')
 
   console.log('ChainId:', chainId)
   console.log('Deployer address:', deployer)
   console.log('ProfitToken address:', token.address)
+  console.log('StakedToken address:', stakedToken.address)
 
   // noinspection PointlessBooleanExpressionJS
   if (!upgradeProxy) {
     const Gov = await ethers.getContractFactory('Gov')
 
-    const gov = await upgrades.deployProxy(Gov, [token.address], {
+    const gov = await upgrades.deployProxy(Gov, [token.address, stakedToken.address], {
       kind: 'uups',
     })
 
